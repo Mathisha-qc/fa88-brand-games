@@ -1,0 +1,6 @@
+_pycache_/
+.pytest_cache/
+logs/
+allure-results/
+.chrome-*
+*.log
