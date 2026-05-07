@@ -18,10 +18,12 @@ class LoginPage(BasePage):
     @allure.step("Step 3: Enter password")
     def enter_pass(self, password): 
         self._interact_canvas(x=986, y=489, text=password)
+    
+    @allure.step("Step 4: Enter captcha")
+    def enter_cap(self, captcha): 
+        self._interact_canvas(x=755, y=692, text=captcha)
 
     @allure.step("Step 4: Submit Login Credentials")
     def click_final_submit(self):
         self._interact_canvas(x=970, y=824, wait_after=4.0)
-    
-   
-
+        

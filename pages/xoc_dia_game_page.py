@@ -7,7 +7,7 @@ from utils.ws_commands import WS_CMD
 
 @allure.feature("Game Mechanics")
 @allure.story("Xoc Dia Betting Flow")
-class GamePage(BasePage):
+class XocDiaGamePage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
         self._ws_buffer = []

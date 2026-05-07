@@ -1,6 +1,10 @@
 __pycache__/
 .pytest_cache/
-logs/
+.selenium-cache/
 allure-results/
-.chrome-*
+logs/
+reports/
+.chrome-*/
 *.log
+*.pyc
+venv/

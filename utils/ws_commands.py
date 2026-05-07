@@ -4,28 +4,64 @@ WS_CMD = {
     "JOIN_ROOM": "16012",
     "BET_START": "16005",
     "PLACE_BET": "16002",
-    "WALLET_BEFORE": "100",
+    "USER_INFO": "100",
     "WALLET_UPDATE": "317",
     "END_GAME" : "16006",
     "CHAT" : "16008",
     "REBET" : "16010",
     "LEAVE_ROOM" : "16013",
     "UNSUBSCRIBE": "16001",
-    
+    "INVITATION_CONFIRM" : "306",
 }
 
-
-# Popup-related/global modal commands
-POPUP_CMDS = {
-    "JOIN_TABLE_INVITATION": "305",
-    "MESSAGES_AND_NEWS": "104",
-    "PROMOTION_MESSAGE": "6",
-    "FREE_GIFTCARD": "8",
-    "BROADCAST_MESSAGE": "10",
-    "SHOW_WEBVIEW": "12",
-    "LOAN_MESSAGE": "322",
-    "VERIFY_PHONE_NUMBER": "103",
+TAIXIU_MINI_CMD = {
+    "BET" : "1000",
+    "START_GAME" : "1002",
+    "SHOW_RESULT" : "1003",
+    "CALCULATE_RESULT_MONEY" : "1004",
+    "SUBSCRIBE_INFO" : "1005",
+    "UNSUBSCRIBE_INFO" : "1006",
+    "SESSION_ANALYTIC" : "1007",
+    "UPDATE_BET_INFO" : "1008",
+    "GET_BET_HISTORY" : "1009",
+    "BET_FREE" : "1010",
+    "CHAT" : "1011",
+    "UPDATE_TO_ZONE" : "1015",
 }
 
-# Optional quick set for checks
-POPUP_CMD_VALUES = set(POPUP_CMDS.values())
+TAIXIU_MD5_MINI_CMD = {
+    "SUBSCRIBLE" : "2000",
+    "UNSUBSCRIBLE" : "2001",
+    "ADD_BETTING" : "2002",
+    "BATCH_BETTING" : "2003",
+    "FETCH_BETTING_HISTORY" : "2004",
+    "START_BETTING" : "2005",
+    "END_GAME" : "2006",
+    "UPDATE_BETTING" : "2007",
+    "CHAT" : "2008",
+    "FETCH_SESSION_DETAIL" : "2009",
+    "FETCH_JACKPOT_HISTORY" : "2010",
+}
+
+TREN_DUOI_CMD = {
+        "INFO_GAME" : "1500",
+        "START_GAME" : "1501",
+        "START_ROUND" : "1502",
+        "STOP_GAME" : "1503",
+        "UPDATE_JAR" : "1504",
+        
+}
+
+MINI_POKER_CMD = {
+    "SUBSCRIBE_JACKPOT" : "1300",
+    "UNSUBSCRIBE_JACKPOT" : "1301",
+    "SPIN_RESULT" : "1302",
+    "AUTO_SPIN" : "1303",
+    "UPDATE_JACKPOT" : "1304",
+    "CANCEL_AUTO_SPIN" : "1305",
+    "SPIN_FREE" : "1308",
+}
+
+GAME_IDS = {
+    "MINI_POKER": 199,
+}
