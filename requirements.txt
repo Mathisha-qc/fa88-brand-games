@@ -4,3 +4,7 @@ webdriver-manager
 allure-pytest
 pytest-html
 opencv-python
+pyautogui
+mss
+numpy
+Pillow
