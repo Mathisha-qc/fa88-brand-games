@@ -5,8 +5,8 @@ import time
 import allure
 import cv2
 import numpy as np
-import easyocr
-
+#import easyocr
+easyocr = None
 from selenium.webdriver.common.action_chains import ActionChains
 
 from pages.base_page import BasePage
@@ -27,7 +27,7 @@ class GenericSlotGamePage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
         self.ws = WSEngine(driver, self.log_step)
-        self.reader = easyocr.Reader(["vi", "en"], gpu=False)
+        self.reader = easyocr.Reader(["vi", "en"], gpu=False) if easyocr else None
 
     def _norm(self, s: str) -> str:
         return re.sub(r"[^a-z0-9]+", " ", (s or "").lower()).strip()
@@ -74,6 +74,8 @@ class GenericSlotGamePage(BasePage):
         return None
 
     def _find_by_ocr(self, frame):
+        if self.reader is None:
+         return None
         results = self.reader.readtext(frame)
         keywords = [self._norm(k) for k in self.target_keywords]
 
