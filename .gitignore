@@ -3,7 +3,11 @@ __pycache__/
 .selenium-cache/
 allure-results/
 logs/
-reports/
+reports/*.zip
+reports/latest_run/
+reports/screenshots/
+reports/temp_run_*/
+reports/__pycache__/
 .chrome-*/
 *.log
 *.pyc
