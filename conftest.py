@@ -183,7 +183,7 @@ def pytest_sessionfinish(session, exitstatus):
                     arcname = os.path.relpath(file_path, output_dir)
                     zipf.write(file_path, arcname)
                     
-        print(f"\n📦 PERFECT ZIP CREATED: {zip_path}")
+        print(f"\n PERFECT ZIP CREATED: {zip_path}")
 
         # 2. RENAME TEMP FOLDER TO 'latest_run' INSTEAD OF DELETING IT
         import shutil
@@ -196,7 +196,7 @@ def pytest_sessionfinish(session, exitstatus):
         # Move our new temp folder to become the latest run
         if "temp_run" in str(output_dir.name):
             output_dir.rename(latest_dir)
-            print("🧹 Temporary directory moved to 'latest_run' for viewing.")
+            print(" Temporary directory moved to 'latest_run' for viewing.")
         
         # 3. OPEN THE LOCAL HTML FILE IN CHROME
         import webbrowser

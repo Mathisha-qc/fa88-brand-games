@@ -8,3 +8,8 @@ pyautogui
 mss
 numpy
 Pillow
+easyocr
+torch
+torchvision
+
+
