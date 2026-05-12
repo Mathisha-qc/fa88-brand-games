@@ -15,6 +15,11 @@ from utils.screen_recorder import ScreenRecorder
 from reports.custom_report import report, write_html_report
 
 
+def log_runtime(message: str):
+    timestamp = datetime.now().strftime("%H:%M:%S")
+    print(f"[RUN {timestamp}] {message}", flush=True)
+
+
 
 def pytest_configure(config):
     # This adds a custom 'Environment' section to your Allure Dashboard
@@ -22,8 +27,9 @@ def pytest_configure(config):
     report.base_url = "https://v.hitclub.sc/"
     report.username = "Mathisha1"
     report.browser_name = "Chrome"
-    report.captcha_mode = "Manual"
+    report.captcha_mode = "Auto"
     report.game_name = "Lobby"   # default (will override per game)
+    log_runtime("Pytest runtime configured.")
 
     # ✅ ALLURE ENV
     allure.dynamic.parameter("Browser", report.browser_name)
@@ -35,6 +41,8 @@ def driver():
     chrome_options = Options()
 
     is_ci = bool(os.getenv("JENKINS_URL")) or os.getenv("CI", "").lower() == "true"
+    run_mode = "Jenkins/CI Headless" if is_ci else "Local Visible Chrome"
+    log_runtime(f"Driver setup started. Mode: {run_mode}")
     
     # This is the "Magic" flag that keeps the browser open after the script ends
     if not is_ci:
@@ -62,27 +70,28 @@ def driver():
     chrome_options.add_argument("--disable-renderer-backgrounding")
     chrome_options.add_argument("--disable-backgrounding-occluded-windows")
 
-    chrome_options.add_argument("--headless=new")
-    chrome_options.add_argument("--window-size=1920,1080")
-
     if is_ci:
+        chrome_options.add_argument("--headless=new")
+        chrome_options.add_argument("--window-size=1920,1080")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
     
     # 2. Initialize Driver
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=chrome_options)
+    log_runtime("Chrome driver started successfully.")
 
     # 3. Explicitly enable Network domain for CDP events
     driver.execute_cdp_cmd("Network.enable", {})
+    log_runtime("CDP Network logging enabled.")
     
     # 4. Provide the driver to the test
     yield driver
     
     # 5. Teardown
     # We print the info but DO NOT call driver.quit() or driver.close()
-    print(f"\n[INFO] Test finished. Browser remains open.")
-    print(f"[INFO] Profile Path: {temp_profile}")
+    log_runtime("Session finished. Browser remains open by design.")
+    log_runtime(f"Profile Path: {temp_profile}")
 
 
 
@@ -104,6 +113,7 @@ def pytest_runtest_makereport(item, call):
         return
 
     status = "PASSED" if result.passed else "FAILED"
+    log_runtime(f"Test '{item.name}' completed with status: {status}")
 
     try:
         # ✅ Save final screenshot directly to the dynamic run directory
@@ -126,9 +136,10 @@ def pytest_runtest_makereport(item, call):
             message=f"Test finished with status: {status}",
             screenshot=str(screenshot_path)
         )
+        log_runtime(f"Final screenshot saved: {screenshot_path}")
 
     except Exception as e:
-        print(f"[ERROR] Screenshot failed: {e}")
+        log_runtime(f"[ERROR] Screenshot failed for '{item.name}': {e}")
    
 
 
@@ -143,17 +154,19 @@ def pytest_runtest_call(item):
 
     if driver:
         # 2. SETUP VIDEO PATH & START RECORDING
-        video_path = report.run_dir / f"{item.name}.mp4"
+        video_path = report.run_dir / f"{item.name}.webm"
         
         # ✅ FIX: Pass BOTH the driver and the path
         recorder = ScreenRecorder(driver, str(video_path))
         recorder.start()
+        log_runtime(f"Video recording started for '{item.name}' -> {video_path}")
 
     report.add_step(
         name=item.name,
         status="INFO",
         message="Test started"
     )
+    log_runtime(f"Test execution started: {item.name}")
 
     yield
 
@@ -163,20 +176,23 @@ def pytest_runtest_call(item):
         resolved_video_path = Path(recorder.path)
         if resolved_video_path.exists():
             report.video_path = str(resolved_video_path)
+            log_runtime(f"Video recording saved for '{item.name}' -> {resolved_video_path}")
         else:
-            print(f"[WARN] Video file was not created for {item.name}: {resolved_video_path}")
+            log_runtime(f"[WARN] Video file was not created for '{item.name}': {resolved_video_path}")
 
     report.add_step(
         name=item.name,
         status="INFO",
         message="Test finished"
     )
+    log_runtime(f"Test execution finished: {item.name}")
    
 
 # GENERATE HTML REPORT, ZIP & CLEANUP
 def pytest_sessionfinish(session, exitstatus):
 
     final_status = "PASSED" if exitstatus == 0 else "FAILED"
+    log_runtime(f"Session finishing with status: {final_status}")
     report.finish(final_status)
 
     output_dir = report.run_dir
@@ -197,7 +213,7 @@ def pytest_sessionfinish(session, exitstatus):
                     arcname = os.path.relpath(file_path, output_dir)
                     zipf.write(file_path, arcname)
                     
-        print(f"\n PERFECT ZIP CREATED: {zip_path}")
+        log_runtime(f"Report ZIP created: {zip_path}")
 
         # 2. RENAME TEMP FOLDER TO 'latest_run' INSTEAD OF DELETING IT
         import shutil
@@ -210,15 +226,16 @@ def pytest_sessionfinish(session, exitstatus):
         # Move our new temp folder to become the latest run
         if "temp_run" in str(output_dir.name):
             output_dir.rename(latest_dir)
-            print(" Temporary directory moved to 'latest_run' for viewing.")
+            log_runtime("Temporary report folder moved to 'latest_run'.")
         
         # 3. OPEN THE LOCAL HTML FILE IN CHROME
         import webbrowser
         final_html_path = latest_dir / "custom_report.html"
         chrome_path = "C:/Program Files/Google/Chrome/Application/chrome.exe %s"
         webbrowser.get(chrome_path).open(final_html_path.resolve().as_uri())
+        log_runtime(f"HTML report opened: {final_html_path.resolve()}")
 
     except Exception as e:
-        print(f"[ERROR] Session finish failed: {e}")
+        log_runtime(f"[ERROR] Session finish failed: {e}")
 
     

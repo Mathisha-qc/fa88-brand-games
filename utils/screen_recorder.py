@@ -28,11 +28,12 @@ class ScreenRecorder:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         width, height = size
 
+        # Prefer browser-friendly codecs for HTML report playback.
         candidates = [
-            ("mp4v", self.path.with_suffix(".mp4")),
+            ("VP90", self.path.with_suffix(".webm")),
+            ("VP80", self.path.with_suffix(".webm")),
             ("avc1", self.path.with_suffix(".mp4")),
-            ("XVID", self.path.with_suffix(".avi")),
-            ("MJPG", self.path.with_suffix(".avi")),
+            ("mp4v", self.path.with_suffix(".mp4")),
         ]
 
         for codec, output_path in candidates:
