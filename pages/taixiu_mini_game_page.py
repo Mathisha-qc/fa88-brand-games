@@ -94,6 +94,13 @@ class TaiXiuMiniGamePage(BasePage):
             ev,
             ["wallet", "balance", "gold"]
         )
+        
+        self.log_step(
+            "Initial Wallet",
+            "PASSED",
+            f"Initial Wallet: {wallet}",
+            take_screenshot=False
+        )
 
         return wallet
 
@@ -155,6 +162,13 @@ class TaiXiuMiniGamePage(BasePage):
         wallet = self.ws._extract_amount(
             ev,
             ["wallet", "balance", "gold"]
+        )
+
+        self.log_step(
+            "Wallet After Bet",
+            "PASSED",
+            f"Wallet After: {wallet}",
+            take_screenshot=False
         )
 
         return wallet

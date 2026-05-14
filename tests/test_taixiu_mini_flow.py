@@ -42,6 +42,7 @@ def test_taixiu_mini_open_flow(driver):
     with allure.step("Validate Subscription"):
 
         tx_page.wait_for_subscription()
+        tx_page.get_wallet_balance()
 
     # ---------------------------------
     # Wait Game Start
@@ -127,7 +128,7 @@ def test_taixiu_mini_open_flow(driver):
             )
 
             print("[INFO] LOSS detected")
-
+    
     # ---------------------------------
     # Chat Validation
     # ---------------------------------

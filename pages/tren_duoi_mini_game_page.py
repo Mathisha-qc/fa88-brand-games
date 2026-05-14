@@ -114,9 +114,35 @@ class TrenDuoiMiniGamePage(BasePage):
         )
 
         print("Subscribed")
-
+    
     # =====================================================
     # WALLET
+    # =====================================================  
+    @allure.step("Get wallet balance")
+    def get_wallet_balance(self) -> float:
+
+        before_ev = self.ws._wait_for_cmd(
+            WS_CMD["USER_INFO"],
+            timeout=10,
+            from_cursor=False
+        )
+
+        wallet_before = self.ws._extract_amount(
+            before_ev,
+            ["wallet", "balance", "gold"]
+        )
+
+        self.log_step(
+            "Initial Wallet",
+            "PASSED",
+            f"[INFO] Wallet before: {wallet_before}",
+            take_screenshot=False
+        )
+
+        return wallet_before
+
+    # =====================================================
+    # WALLET After Bet
     # =====================================================
 
     @allure.step("Wait For Wallet Update")
@@ -141,7 +167,8 @@ class TrenDuoiMiniGamePage(BasePage):
         self.log_step(
             "Wallet Update",
             "PASSED",
-            str(wallet)
+            str(wallet),
+            take_screenshot=False
         )
 
         return wallet
@@ -377,6 +404,13 @@ class TrenDuoiMiniGamePage(BasePage):
             expected_direction="send"
         )
 
+        self.log_step(
+            "Press Up",
+            "PASSED",
+            "Clicked up",
+            take_screenshot=False
+        )
+
         print("UP pressed")
 
     @allure.step("Press DOWN")
@@ -395,6 +429,13 @@ class TrenDuoiMiniGamePage(BasePage):
             expected_direction="send"
         )
 
+        self.log_step(
+            "Press Down",
+            "PASSED",
+            "Clicked down",
+            take_screenshot=False
+        )
+
         print("DOWN pressed")
 
     @allure.step("Stop Game")
@@ -411,6 +452,12 @@ class TrenDuoiMiniGamePage(BasePage):
             timeout=20,
             from_cursor=True,
             expected_direction="send"
+        )
+
+        self.log_step(
+            "Game Completed",
+            "Passed",
+            "Clicked new round button"  
         )
 
         print("STOP pressed")
@@ -440,9 +487,16 @@ class TrenDuoiMiniGamePage(BasePage):
                 ]
             )
 
+            self.log_step(
+            "Result And Final Wallet",
+            "PASSED",
+            f"WIN | Final Wallet={payout}",
+            take_screenshot=False
+        )
+
             print(
                 f"[PASS] WIN "
-                f"payout={payout}"
+                f"Final Wallet={payout}"
             )
 
             return True, payout

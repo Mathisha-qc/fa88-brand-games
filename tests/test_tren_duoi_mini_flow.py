@@ -45,6 +45,7 @@ def test_trenduoi_mini_open_flow(driver):
     with allure.step("Validate Subscription"):
 
         updown_page.wait_for_subscription()
+        updown_page.get_wallet_balance()
 
     # =====================================================
     # BET FLOW

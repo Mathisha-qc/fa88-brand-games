@@ -42,6 +42,7 @@ def test_mini_poker_open_flow(driver):
     with allure.step("Validate Subscription"):
 
         mp_page.wait_for_subscription()
+        mp_page.get_wallet_balance()
 
     # -----------------------------------
     # Manual Spin

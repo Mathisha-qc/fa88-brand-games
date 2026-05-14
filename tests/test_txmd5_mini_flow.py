@@ -42,6 +42,7 @@ def test_taixiu_md5_mini_open_flow(driver):
     with allure.step("Validate Subscription"):
 
         txmd5_page.wait_for_subscription()
+        txmd5_page.get_wallet_balance()
 
     # -----------------------------------
     # Game Start
@@ -120,27 +121,7 @@ def test_taixiu_md5_mini_open_flow(driver):
         assert game_result_string != "", \
             "Game result string empty"
 
-    # -----------------------------------
-    # Fairness Validation
-    # -----------------------------------
-
-    with allure.step("Validate fairness"):
-
-        generated_hash = txmd5_page.validate_game_fairness(
-            initial_hash=initial_md5_hash,
-            result_string=game_result_string
-        )
-
-        assert (
-            initial_md5_hash.strip().lower()
-            ==
-            generated_hash.strip().lower()
-        ), "Fairness validation failed"
-
-        print(
-            f"[PASS] Fairness validated: {generated_hash}"
-        )
-
+   
     # -----------------------------------
     # Win/Loss Validation
     # -----------------------------------
@@ -178,6 +159,29 @@ def test_taixiu_md5_mini_open_flow(driver):
             )
 
             print("[INFO] LOSS detected")
+    
+    # -----------------------------------
+    # Fairness Validation
+    # -----------------------------------
+
+    with allure.step("Validate fairness"):
+
+        generated_hash = txmd5_page.validate_game_fairness(
+            initial_hash=initial_md5_hash,
+            result_string=game_result_string
+        )
+
+        assert (
+            initial_md5_hash.strip().lower()
+            ==
+            generated_hash.strip().lower()
+        ), "Fairness validation failed"
+
+        print(
+            f"[PASS] Fairness validated: {generated_hash}"
+        )
+
+    txmd5_page.get_final_wallet_update()
 
     # -----------------------------------
     # Chat Validation

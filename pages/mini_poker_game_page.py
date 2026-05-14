@@ -95,6 +95,14 @@ class MiniPokerGamePage(BasePage):
             ["wallet", "balance", "gold"]
         )
 
+        self.log_step(
+            "Initial Wallet",
+            "PASSED",
+            f"Initial Wallet: {wallet_before}",
+            take_screenshot=False
+        )
+
+
         return wallet_before
 
     @allure.step("Wait for wallet update")

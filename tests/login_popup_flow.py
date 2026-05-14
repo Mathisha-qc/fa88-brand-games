@@ -15,7 +15,7 @@ def login_and_clear_popups(driver, username="mathisha1", password="678910", capt
     ws = WSEngine(driver, login_pg.log_step)
     
     with allure.step("Open website"):
-      driver.get("https://v.hitclub.sc/")
+      driver.get("https://v.hitclub.pl/")
       
       
 

@@ -100,6 +100,13 @@ class TaiXiuMd5MiniGamePage(BasePage):
             ["wallet", "balance", "gold"]
         )
 
+        self.log_step(
+            "Initial Wallet",
+            "PASSED",
+            f"[INFO] Wallet before: {wallet_before}",
+            take_screenshot=False
+        )
+
         return wallet_before
 
     @allure.step("Wait for wallet update")
@@ -114,6 +121,13 @@ class TaiXiuMd5MiniGamePage(BasePage):
         wallet_after = self.ws._extract_amount(
             after_bet_ev,
             ["wallet", "balance", "gold"]
+        )
+
+        self.log_step(
+            "Wallet After Bet",
+            "PASSED",
+            f"[INFO] Wallet after: {wallet_after}",
+            take_screenshot=False
         )
 
         return wallet_after
@@ -290,6 +304,14 @@ class TaiXiuMd5MiniGamePage(BasePage):
             ),
             name="Fairness Hash Verification",
             attachment_type=allure.attachment_type.TEXT
+        )
+
+        self.log_step(
+            "Fairness Validation",
+            "PASSED",
+            f"Initial Hash: {initial_hash}\n"
+            f"Result String: {result_string}\n"
+            f"Generated Hash: {generated_hash}"
         )
 
         return generated_hash
