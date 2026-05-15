@@ -23,11 +23,11 @@ def log_runtime(message: str):
 
 def pytest_configure(config):
     # This adds a custom 'Environment' section to your Allure Dashboard
-    report.title = "HitClub Automation Report"
-    report.base_url = "https://v.hitclub.sc/"
-    report.username = "Mathisha1"
+    report.title = "YO88 Automation Report"
+    report.base_url = "https://web.yo88.tv/"
+    report.username = "Mathisha"
     report.browser_name = "Chrome"
-    report.captcha_mode = "Auto"
+    report.captcha_mode = "Manual"
     report.game_name = "Lobby"   # default (will override per game)
     log_runtime("Pytest runtime configured.")
 

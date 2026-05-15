@@ -17,8 +17,8 @@ class PopupHandler(BasePage):
         received_306 = False
 
         # static popup clear
-        self._interact_canvas(x=1652, y=177, wait_after=3)  # Popup 1
-        print("warning popup cleared")
+        #self._interact_canvas(x=1652, y=177, wait_after=3)  # Popup 1
+        #print("warning popup cleared")
         
 
         # FIRST chance to catch 305
