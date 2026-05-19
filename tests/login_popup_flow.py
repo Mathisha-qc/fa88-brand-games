@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 @allure.step("Login and clear popups")
-def login_and_clear_popups(driver, username="Mathisha", password="Ma1234", captcha="ma"):
+def login_and_clear_popups(driver, username="Mathisha8", password="Ma1234", captcha="ma"):
     login_pg = LoginPage(driver)
 
     ws = WSEngine(driver, login_pg.log_step)
@@ -78,7 +78,21 @@ def login_and_clear_popups(driver, username="Mathisha", password="Ma1234", captc
     time.sleep(20)
     with allure.step("Clear Lobby Popups"):
         popup = PopupHandler(driver)
-        popup.clear_all_whenever(timeout=30)
+        print("[INFO] Starting smart cleanup...")
+        # 1. Handle Static Popup
+        popup._clear_warning_popup()
+
+        # 2. FIRST chance to catch 305
+        handled_305, received_306 = popup._handle_invitation(context_msg="before UI")
+
+        # 3. Handle Main UI Popup
+        popup._clear_main_ui_popup()
+
+        # 4. SECOND chance to catch 305 (ONLY if not already fully handled)
+        if not handled_305 or not received_306:
+            popup._handle_invitation(context_msg="after UI")
+
+        print("[INFO] Cleanup finished.")
 
         login_pg.step(
           "Popups Cleared",

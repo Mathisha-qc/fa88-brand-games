@@ -12,6 +12,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 from pages.base_page import BasePage
 from core.ws_engine import WSEngine
 from utils.ws_commands import WS_CMD
+from pages.popup_handler import PopupHandler
+
 
 
 class GenericSlotGamePage(BasePage):
@@ -117,6 +119,7 @@ class GenericSlotGamePage(BasePage):
                 cx, cy, conf = result
                 self._interact_canvas(x=cx, y=cy, wait_after=2)
                 self.log_step("Open Game", "PASSED", f"{self.game_name} image clicked ({cx},{cy}) conf={conf:.2f}")
+                print("Game opened")
                 return True
 
            # ocr_result = self._find_by_ocr(frame)
@@ -130,6 +133,7 @@ class GenericSlotGamePage(BasePage):
             time.sleep(0.8)
 
         self.log_step("Open Game", "FAILED", f"{self.game_name} not found after scrolling")
+        print("Game not opened")
         return False
 
     def _get_latest_wallet_amount(self, path_keys=None):
@@ -152,6 +156,7 @@ class GenericSlotGamePage(BasePage):
         with allure.step("Perform Manual Spin"):
             self._interact_canvas(x=spin[0], y=spin[1], wait_after=0.4)
             self.log_step("Spin", "PASSED", f"Spin clicked at {spin}")
+            print("Manual Spined")
 
     @allure.step("Step 2: Validate Round Flow")
     def play_and_validate_flow(self, wallet_before=None):
@@ -159,6 +164,7 @@ class GenericSlotGamePage(BasePage):
 
         with allure.step("1. Validate Subscriptions"):
             self.ws._wait_for_cmd("10002", timeout=5, expected_direction="send")
+            print("Subscribed")
             time.sleep(5)
 
         with allure.step("2. Wallet Balance Before Bet"):
@@ -187,6 +193,7 @@ class GenericSlotGamePage(BasePage):
 
             assert wallet_after_bet is not None, "[FAIL] Could not parse wallet_after_bet."
             self.log_step("Wallet After Bet", "PASSED", f"{wallet_before} -> {wallet_after_bet}")
+            print(f"{wallet_before} -> {wallet_after_bet}")
 
         with allure.step("5. Determine Round Result (Win/Loss)"):
             try:
@@ -199,10 +206,12 @@ class GenericSlotGamePage(BasePage):
             allure.dynamic.title("RESULT: WIN")
             allure.attach(f"Wallet Update: {wallet_final}", name="Audit", attachment_type=allure.attachment_type.TEXT)
             self.log_step("Round Result", "PASSED", f"WIN | {wallet_after_bet} -> {wallet_final}")
+            print(f"WIN | {wallet_after_bet} -> {wallet_final}")
         else:
             allure.dynamic.title("RESULT: LOSS")
             allure.attach(f"Wallet Update: {wallet_after_bet}", name="Audit", attachment_type=allure.attachment_type.TEXT)
             self.log_step("Round Result", "INFO", f"LOSS | Wallet: {wallet_after_bet}")
+            print(f"LOSS | Wallet: {wallet_after_bet}")
 
     def _hold_on_canvas(self, x, y, hold_seconds=2.0, wait_after=0.2):
         canvas = self.driver.find_element("tag name", "canvas")
@@ -249,6 +258,7 @@ class GenericSlotGamePage(BasePage):
         # Start Auto Spin
         self._hold_on_canvas(x=spin[0], y=spin[1], hold_seconds=hold_seconds, wait_after=0.2)
         self.log_step("Auto Spin Start", "PASSED", f"Long press {hold_seconds}s at {spin}")
+        print("Auto Spin Started")
 
         # Let the game spin automatically for the specified duration
         time.sleep(run_seconds)
@@ -266,6 +276,7 @@ class GenericSlotGamePage(BasePage):
         time.sleep(1.5)
         # Take the stopped screenshot
         self.log_step("Auto Spin Stopped Screen", "PASSED", "Captured screenshot after stop", take_screenshot=True)
+        print("Auto Spin Stopped")
 
         # ==========================================
         # PHASE 2: OFFLINE ANALYSIS
@@ -302,6 +313,7 @@ class GenericSlotGamePage(BasePage):
                             f"Wallet {wallet_prev} -> {wallet_now} (delta={delta})",
                             take_screenshot=False
                         )
+                        print(f"Auto Spin Round Wallet : {wallet_prev} -> {wallet_now} (delta={delta})")
                         wallet_prev = wallet_now  # Update tracker for the next iteration
 
         # ==========================================
@@ -314,20 +326,22 @@ class GenericSlotGamePage(BasePage):
         time.sleep(3)
 
         self.log_step("Wallet After Auto Stop", "PASSED", f"Wallet after stop: {wallet_after_stop}", take_screenshot=True)
+        print(f"Wallet after stop: {wallet_after_stop}")
 
         return spin_results
 
     exit_btn = (130, 237)
-    close_btn = (1646, 166)
+    
 
     @allure.step("Step 3: Exit Game")
     def exit_game(self, back_btn=None, close_btn=None):
         if back_btn is None:
            back_btn = self.exit_btn
-        if close_btn is None:
-           close_btn = self.close_btn
+        
 
         self._interact_canvas(x=back_btn[0], y=back_btn[1], wait_after=0.4)
         self.ws._wait_for_cmd("10001", timeout=15, from_cursor=True, expected_direction="send")
-        self._interact_canvas(x=close_btn[0], y=close_btn[1], wait_after=0.4)
-        self.log_step("Exit Game", "PASSED", f"Exited using {back_btn}, {close_btn}")
+        popup = PopupHandler(self.driver)
+        popup._clear_warning_popup()
+        self.log_step("Exit Game", "PASSED", "Exited")
+        print("Unsubscribed")
