@@ -9,13 +9,13 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 @allure.step("Login and clear popups")
-def login_and_clear_popups(driver, username="Mathisha8", password="Ma1234", captcha="ma"):
+def login_and_clear_popups(driver, username="MathishaA", password="Ma1234", captcha="ma"):
     login_pg = LoginPage(driver)
 
     ws = WSEngine(driver, login_pg.log_step)
     
     with allure.step("Open website"):
-      driver.get("https://web.yo88.tv/")
+      driver.get("https://v.fa88.tv/")
       
       
 
